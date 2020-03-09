@@ -1,0 +1,418 @@
+package dependencies;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+import com.sun.org.apache.bcel.internal.generic.DDIV;
+
+import connector.Connector;
+
+import javax.swing.JPasswordField;
+import javax.swing.border.MatteBorder;
+import javax.swing.ImageIcon;
+
+public class Requestorform extends JFrame implements ActionListener {
+
+	private JPanel contentPane;
+	private JTextField nametxt;
+	private JTextField emailtxt;
+	private JTextField phonetxt;
+	private JTextField txtDdmmyyyy;
+	private JTextField weightint;
+	private JTextField reqdatetxt;
+	private JTextField hospitaltxt;
+	JTextArea messagetxt;
+	JComboBox bgcombo;
+	JComboBox gendercombo;
+	private JPasswordField passwordtxt;
+	JComboBox comboBox;
+	JLabel errorlbl;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Requestorform frame = new Requestorform();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Requestorform() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1200, 700);
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(255, 255, 255));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		errorlbl = new JLabel("");
+		errorlbl.setBounds(719, 600, 430, 30);
+		contentPane.add(errorlbl);
+		errorlbl.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+		errorlbl.setHorizontalAlignment(SwingConstants.CENTER);
+		errorlbl.setForeground(Color.YELLOW);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setForeground(new Color(255, 69, 0));
+		panel.setBorder(null);
+		panel.setBounds(12, 29, 1226, 642);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblRegistrationForm = new JLabel("Requestor Form");
+		lblRegistrationForm.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		lblRegistrationForm.setBounds(41, 30, 653, 62);
+		lblRegistrationForm.setForeground(Color.WHITE);
+		lblRegistrationForm.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRegistrationForm.setFont(new Font("Times New Roman", Font.BOLD, 28));
+		panel.add(lblRegistrationForm);
+		
+		JLabel lblFullName = new JLabel("Full Name");
+		lblFullName.setForeground(new Color(255, 69, 0));
+		lblFullName.setBounds(91, 145, 80, 30);
+		lblFullName.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblFullName);
+		
+		JLabel lblEmailId = new JLabel("Email ID");
+		lblEmailId.setForeground(new Color(255, 69, 0));
+		lblEmailId.setBounds(626, 494, 80, 30);
+		lblEmailId.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblEmailId);
+		
+		JLabel lblPhoneNo = new JLabel("Phone no.");
+		lblPhoneNo.setForeground(new Color(255, 69, 0));
+		lblPhoneNo.setBounds(91, 260, 80, 30);
+		lblPhoneNo.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblPhoneNo);
+		
+		JLabel lblAddress = new JLabel("Location");
+		lblAddress.setForeground(new Color(255, 69, 0));
+		lblAddress.setBounds(91, 316, 80, 30);
+		lblAddress.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblAddress);
+		
+		JLabel lblBloodGroup = new JLabel("Blood Group");
+		lblBloodGroup.setForeground(new Color(255, 69, 0));
+		lblBloodGroup.setBounds(591, 145, 120, 30);
+		lblBloodGroup.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblBloodGroup);
+		
+		JLabel lblDateOfBirth = new JLabel("Date Of Birth");
+		lblDateOfBirth.setForeground(new Color(255, 69, 0));
+		lblDateOfBirth.setBounds(591, 202, 120, 30);
+		lblDateOfBirth.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblDateOfBirth);
+		
+		JLabel lblGender = new JLabel("Gender");
+		lblGender.setForeground(new Color(255, 69, 0));
+		lblGender.setBounds(91, 403, 80, 30);
+		lblGender.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblGender);
+		
+		JLabel lblWeight = new JLabel("Weight");
+		lblWeight.setForeground(new Color(255, 69, 0));
+		lblWeight.setBounds(626, 260, 80, 30);
+		lblWeight.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(lblWeight);
+		
+		nametxt = new JTextField();
+		nametxt.setForeground(new Color(255, 255, 255));
+		nametxt.setOpaque(false);
+		nametxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		nametxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		nametxt.setBounds(188, 145, 250, 30);
+		panel.add(nametxt);
+		nametxt.setColumns(10);
+		
+		emailtxt = new JTextField();
+		emailtxt.setForeground(new Color(255, 255, 255));
+		emailtxt.setOpaque(false);
+		emailtxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		emailtxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		emailtxt.setBounds(723, 498, 250, 30);
+		panel.add(emailtxt);
+		emailtxt.setColumns(10);
+		
+		phonetxt = new JTextField();
+		phonetxt.setForeground(new Color(255, 255, 255));
+		phonetxt.setOpaque(false);
+		phonetxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		phonetxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		phonetxt.setBounds(188, 264, 250, 30);
+		panel.add(phonetxt);
+		phonetxt.setColumns(10);
+		
+		txtDdmmyyyy = new JTextField();
+		txtDdmmyyyy.setForeground(new Color(255, 255, 255));
+		txtDdmmyyyy.setOpaque(false);
+		txtDdmmyyyy.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		txtDdmmyyyy.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		txtDdmmyyyy.setBounds(723, 206, 250, 30);
+		txtDdmmyyyy.setToolTipText("yyyy-mm-dd");
+		panel.add(txtDdmmyyyy);
+		txtDdmmyyyy.setColumns(10);
+		
+		bgcombo = new JComboBox();
+		bgcombo.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		bgcombo.setForeground(new Color(255, 69, 0));
+		bgcombo.setBounds(723, 149, 100, 30);
+		bgcombo.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		bgcombo.setModel(new DefaultComboBoxModel(new String[] {"Ap", "An", "Bp", "Bn", "ABp", "ABn", "Op", "Oneg"}));
+		panel.add(bgcombo);
+		
+		gendercombo = new JComboBox();
+		gendercombo.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		gendercombo.setForeground(new Color(255, 69, 0));
+		gendercombo.setBounds(186, 403, 100, 30);
+		gendercombo.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		gendercombo.setModel(new DefaultComboBoxModel(new String[] {"Male", "Female", "Others"}));
+		panel.add(gendercombo);
+		
+		weightint = new JTextField();
+		weightint.setForeground(new Color(255, 255, 255));
+		weightint.setOpaque(false);
+		weightint.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		weightint.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		weightint.setBounds(723, 269, 250, 30);
+		panel.add(weightint);
+		weightint.setColumns(10);
+		
+		JButton submit = new JButton("Submit");
+		submit.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		submit.setForeground(new Color(255, 69, 0));
+		submit.addActionListener(this);
+		submit.setBounds(319, 541, 100, 50);
+		submit.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		panel.add(submit);
+		
+		JButton btnExit = new JButton("Homepage");
+		btnExit.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		btnExit.setForeground(new Color(255, 69, 0));
+		btnExit.addActionListener(this);
+		btnExit.setBounds(542, 541, 120, 50);
+		btnExit.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		panel.add(btnExit);
+		
+		JLabel lblBloodRequiredWhen = new JLabel("Blood Required\n When?");
+		lblBloodRequiredWhen.setForeground(new Color(255, 69, 0));
+		lblBloodRequiredWhen.setFont(new Font("Times New Roman", Font.BOLD, 11));
+		lblBloodRequiredWhen.setBounds(576, 310, 135, 70);
+		panel.add(lblBloodRequiredWhen);
+		
+		reqdatetxt = new JTextField();
+		reqdatetxt.setForeground(new Color(255, 255, 255));
+		reqdatetxt.setOpaque(false);
+		reqdatetxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		reqdatetxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		reqdatetxt.setColumns(10);
+		reqdatetxt.setBounds(723, 329, 250, 30);
+		panel.add(reqdatetxt);
+		
+		messagetxt = new JTextArea();
+		messagetxt.setForeground(new Color(255, 255, 255));
+		messagetxt.setOpaque(false);
+		messagetxt.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		messagetxt.setBorder(new LineBorder(Color.WHITE));
+		messagetxt.setBounds(723, 388, 250, 90);
+		panel.add(messagetxt);
+		
+		JLabel lblMessage = new JLabel("Message");
+		lblMessage.setForeground(new Color(255, 69, 0));
+		lblMessage.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblMessage.setBounds(626, 403, 80, 30);
+		panel.add(lblMessage);
+		
+		JLabel lblHospital = new JLabel("Hospital");
+		lblHospital.setForeground(new Color(255, 69, 0));
+		lblHospital.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblHospital.setBounds(91, 467, 80, 30);
+		panel.add(lblHospital);
+		
+		hospitaltxt = new JTextField();
+		hospitaltxt.setForeground(new Color(255, 255, 255));
+		hospitaltxt.setOpaque(false);
+		hospitaltxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		hospitaltxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		hospitaltxt.setColumns(10);
+		hospitaltxt.setBounds(188, 468, 250, 30);
+		panel.add(hospitaltxt);
+		
+		JLabel lblPassword = new JLabel("Password");
+		lblPassword.setForeground(new Color(255, 69, 0));
+		lblPassword.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblPassword.setBounds(91, 202, 80, 30);
+		panel.add(lblPassword);
+		
+		passwordtxt = new JPasswordField();
+		passwordtxt.setForeground(new Color(255, 255, 255));
+		passwordtxt.setOpaque(false);
+		passwordtxt.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		passwordtxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		passwordtxt.setBounds(188, 207, 250, 30);
+		panel.add(passwordtxt);
+		
+		comboBox = new JComboBox();
+		comboBox.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		comboBox.setForeground(new Color(255, 69, 0));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Kothrud", "Karve Nagar", "Warje"}));
+		comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		comboBox.setBounds(188, 321, 250, 30);
+		panel.add(comboBox);
+		
+		JLabel lblyyyymmdd = new JLabel("(YYYY-MM-DD)");
+		lblyyyymmdd.setForeground(new Color(255, 255, 255));
+		lblyyyymmdd.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		lblyyyymmdd.setBounds(995, 210, 110, 22);
+		panel.add(lblyyyymmdd);
+		
+		JLabel label = new JLabel("(YYYY-MM-DD)");
+		label.setForeground(new Color(255, 255, 255));
+		label.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		label.setBounds(995, 336, 110, 22);
+		panel.add(label);
+		
+		JLabel lblNewLabel_1 = new JLabel("New label");
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+		lblNewLabel_1.setBounds(0, 0, 1226, 642);
+		panel.add(lblNewLabel_1);
+		
+		
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+		lblNewLabel.setBounds(0, 0, 1244, 671);
+		contentPane.add(lblNewLabel);
+		
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Connection conn = Connector.ConnectDb();
+		String cmd = e.getActionCommand();
+		if(cmd == "Submit"){
+			while (true) {
+				String text = nametxt.getText();
+				String text2 = emailtxt.getText();
+				String x = new String(passwordtxt.getPassword());
+				String text3 = phonetxt.getText();
+				if(!isValid(text2)){
+					errorlbl.setText("Incorrect Email ID!");
+					break;
+				}
+				if(x.length() <= 7 || x.length() >= 14){
+					errorlbl.setText("Password  too short or too long! Please keep it between 8 & 13 letters!");
+					break;
+				}
+				if(!isValidnumber(text3)){
+					errorlbl.setText("Phone Number Wrong!");
+					break;
+				}
+				String sql = "insert into requestor_details(P_Name, Blood_Group, Gender, City, Hospital_Name, emailid, phoneno, message, req_when, DOB, Weight, AC_ID) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+				String sql1 = "insert into login_info (Full_Name, EmailID, Password, type_user) values (?, ?, ?, ?);";
+				try {
+					PreparedStatement pst1 = conn.prepareStatement(sql1); //login
+					pst1.setString(1, text);
+					pst1.setString(2, text2);
+					pst1.setString(3, x);
+					pst1.setInt(4, 2);
+					int rs1 = pst1.executeUpdate();
+					sql1 = "select AC_ID from login_info where emailid=?";
+					pst1 = conn.prepareStatement(sql1);
+					pst1.setString(1, text2);
+					ResultSet result = pst1.executeQuery();
+					result.next();
+					int acid = result.getInt("AC_ID");
+
+					PreparedStatement pst = conn.prepareStatement(sql);
+					pst.setString(1, text);
+					pst.setString(2, bgcombo.getSelectedItem().toString());
+					pst.setString(3, gendercombo.getSelectedItem().toString());
+					pst.setString(4, comboBox.getSelectedItem().toString());
+					pst.setString(5, hospitaltxt.getText());
+					pst.setString(6, text2);
+					pst.setString(7, text3);
+					pst.setString(8, messagetxt.getText());
+					pst.setString(9, reqdatetxt.getText());
+					pst.setString(10, txtDdmmyyyy.getText());
+					pst.setInt(11, Integer.parseInt(weightint.getText()));
+					pst.setInt(12, acid);
+
+					int rs = pst.executeUpdate();
+					System.out.println(rs + " " + rs1);
+					dispose();
+					loginpage login = new loginpage();
+					login.frame.setVisible(true);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				errorlbl.setText("Registration Successful!");
+				break;
+			}
+		}
+		else if(cmd == "Homepage"){
+			dispose();
+			loginpage login = new loginpage();
+			login.frame.setVisible(true);
+		}
+	}
+	static boolean isValid(String email) {
+	      String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+	      return email.matches(regex);
+	}
+	static boolean isValidDate(String date) {
+	      String regex = "[12][90][0-9]{2}-(0[0-9]|1[0-2])-([02][09]|3[0-1])";
+	      return date.matches(regex);
+	}
+	
+	public static boolean isValidnumber(String s) 
+    { 
+      // The given argument to compile() method  
+      // is regular expression. With the help of  
+      // regular expression we can validate mobile 
+      // number.  
+      // 1) Begins with 0 or 91 
+      // 2) Then contains 7 or 8 or 9. 
+      // 3) Then contains 9 digits 
+      Pattern p = Pattern.compile("(0/91)?[7-9][0-9]{9}"); 
+
+      // Pattern class contains matcher() method 
+      // to find matching between given number  
+      // and regular expression 
+      Matcher m = p.matcher(s); 
+      return (m.find() && m.group().equals(s)); 
+  } 	
+}

@@ -1,0 +1,272 @@
+package dependencies;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+import connector.Connector;
+import javax.swing.border.MatteBorder;
+import javax.swing.ImageIcon;
+public class bloodavailibility extends JFrame implements ActionListener{
+	Connection conn = Connector.ConnectDb();
+	private JPanel contentPane;
+	JButton signout;
+	JButton update;
+	JSpinner a1;
+	JSpinner a2;
+	JSpinner b1;
+	JSpinner b2;
+	JSpinner ab1;
+	JSpinner ab2;
+	JSpinner o1;
+	JSpinner o2;
+	int acid;
+	private JLabel valuesupdatetxt;
+	private JLabel lblNewLabel;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					bloodavailibility frame = new bloodavailibility(13);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public bloodavailibility(int ac_id) {
+		acid = ac_id;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setBounds(100, 100, 1203, 749);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(255, 255, 255));
+		panel.setForeground(new Color(255, 69, 0));
+		panel.setBorder(null);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblBloodAvailibility = new JLabel("Blood Availibility(in Ltrs)");
+		lblBloodAvailibility.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBloodAvailibility.setForeground(Color.WHITE);
+		lblBloodAvailibility.setFont(new Font("Times New Roman", Font.BOLD, 28));
+		lblBloodAvailibility.setBounds(73, 62, 1015, 59);
+		panel.add(lblBloodAvailibility);
+		
+		a1 = new JSpinner();
+		a1.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		a1.setForeground(new Color(255, 69, 0));
+		//a1.addChangeListener();
+		a1.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		a1.setBounds(73, 201, 80, 80);
+		panel.add(a1);
+		
+		a2 = new JSpinner();
+		a2.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		a2.setForeground(new Color(255, 69, 0));
+		a2.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		a2.setBounds(193, 201, 80, 80);
+		panel.add(a2);
+		
+		b1 = new JSpinner();
+		b1.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		b1.setForeground(new Color(255, 69, 0));
+		b1.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		b1.setBounds(310, 201, 80, 80);
+		panel.add(b1);
+		
+		b2 = new JSpinner();
+		b2.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		b2.setForeground(new Color(255, 69, 0));
+		b2.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		b2.setBounds(423, 201, 80, 80);
+		panel.add(b2);
+		
+		ab1 = new JSpinner();
+		ab1.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		ab1.setForeground(new Color(255, 69, 0));
+		ab1.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		ab1.setBounds(535, 201, 80, 80);
+		panel.add(ab1);
+		
+		ab2 = new JSpinner();
+		ab2.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		ab2.setForeground(new Color(255, 69, 0));
+		ab2.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		ab2.setBounds(650, 201, 80, 80);
+		panel.add(ab2);
+		
+		o1 = new JSpinner();
+		o1.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		o1.setForeground(new Color(255, 69, 0));
+		o1.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		o1.setBounds(768, 201, 80, 80);
+		panel.add(o1);
+		
+		o2 = new JSpinner();
+		o2.setBorder(new MatteBorder(0, 2, 2, 0, (Color) new Color(255, 69, 0)));
+		o2.setForeground(new Color(255, 69, 0));
+		o2.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		o2.setBounds(891, 201, 80, 80);
+		panel.add(o2);
+		
+		JLabel lblA = new JLabel("A+");
+		lblA.setForeground(new Color(255, 69, 0));
+		lblA.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblA.setBounds(85, 314, 56, 16);
+		panel.add(lblA);
+		
+		JLabel lblA_1 = new JLabel("A-");
+		lblA_1.setForeground(new Color(255, 69, 0));
+		lblA_1.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblA_1.setBounds(217, 314, 56, 16);
+		panel.add(lblA_1);
+		
+		JLabel lblB = new JLabel("B+");
+		lblB.setForeground(new Color(255, 69, 0));
+		lblB.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblB.setBounds(334, 314, 56, 16);
+		panel.add(lblB);
+		
+		JLabel lblB_1 = new JLabel("B-");
+		lblB_1.setForeground(new Color(255, 69, 0));
+		lblB_1.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblB_1.setBounds(447, 314, 56, 16);
+		panel.add(lblB_1);
+		
+		JLabel lblAb = new JLabel("AB+");
+		lblAb.setForeground(new Color(255, 69, 0));
+		lblAb.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblAb.setBounds(559, 314, 56, 16);
+		panel.add(lblAb);
+		
+		JLabel lblAb_1 = new JLabel("AB-");
+		lblAb_1.setForeground(new Color(255, 69, 0));
+		lblAb_1.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblAb_1.setBounds(674, 314, 56, 16);
+		panel.add(lblAb_1);
+		
+		JLabel lblO = new JLabel("O+");
+		lblO.setForeground(new Color(255, 69, 0));
+		lblO.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblO.setBounds(792, 314, 56, 16);
+		panel.add(lblO);
+		
+		JLabel lblO_1 = new JLabel("O-");
+		lblO_1.setForeground(new Color(255, 69, 0));
+		lblO_1.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		lblO_1.setBounds(915, 314, 56, 16);
+		panel.add(lblO_1);
+		
+		signout = new JButton("Sign Out");
+		signout.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		signout.setForeground(new Color(255, 69, 0));
+		signout.addActionListener(this);
+		signout.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		signout.setBounds(605, 489, 125, 60);
+		panel.add(signout);
+		
+		update = new JButton("Update");
+		update.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		update.setForeground(new Color(255, 69, 0));
+		update.addActionListener(this);
+		update.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		update.setBounds(289, 489, 125, 60);
+		panel.add(update);
+		
+		valuesupdatetxt = new JLabel("Values Updated!");
+		valuesupdatetxt.setFont(new Font("Times New Roman", Font.PLAIN, 19));
+		valuesupdatetxt.setBounds(447, 424, 156, 32);
+		panel.add(valuesupdatetxt);
+		valuesupdatetxt.setVisible(false);
+		
+		String sql = "select Ap, An, Bp, Bn, ABp, ABn, Op, Oneg from blood_availability where AC_ID=?";
+		try {
+			PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setInt(1, ac_id);
+			ResultSet rs = pst.executeQuery();
+			rs.next();
+			a1.setValue(new Integer (rs.getInt("Ap")));
+			a2.setValue(new Integer (rs.getInt("An")));
+			b1.setValue(new Integer (rs.getInt("Bp")));
+			b2.setValue(new Integer (rs.getInt("Bn")));
+			ab1.setValue(new Integer (rs.getInt("ABp")));
+			ab2.setValue(new Integer (rs.getInt("ABn")));
+			o1.setValue(new Integer (rs.getInt("Op")));
+			o2.setValue(new Integer (rs.getInt("Oneg")));
+			
+			lblNewLabel = new JLabel("New label");
+			lblNewLabel.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+			lblNewLabel.setBounds(0, 0, 1246, 692);
+			panel.add(lblNewLabel);
+			
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		String cmd = e.getActionCommand();
+		
+		if(cmd == "Update"){
+			String sql = "update blood_availability set Ap=?, An=?, Bp=?, Bn=?, ABp=?, ABn=?, Op=?, Oneg=? where AC_ID=?";
+			try {
+				PreparedStatement ps1 = conn.prepareStatement(sql);
+				ps1.setInt(1, new Integer(a1.getValue().toString()).intValue());
+				ps1.setInt(2, new Integer(a2.getValue().toString()).intValue());
+				ps1.setInt(3, new Integer(b1.getValue().toString()).intValue());
+				ps1.setInt(4, new Integer(b2.getValue().toString()).intValue());
+				ps1.setInt(5, new Integer(ab1.getValue().toString()).intValue());
+				ps1.setInt(6, new Integer(ab2.getValue().toString()).intValue());
+				ps1.setInt(7, new Integer(o1.getValue().toString()).intValue());
+				ps1.setInt(8, new Integer(o2.getValue().toString()).intValue());
+				ps1.setInt(9, acid);
+				valuesupdatetxt.setVisible(true);
+				ps1.executeUpdate();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
+		else if(cmd == "Sign Out"){
+			dispose();
+			loginpage login = new loginpage();
+			login.frame.setVisible(true);
+		}
+	}
+
+}

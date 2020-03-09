@@ -1,0 +1,298 @@
+package dependencies;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.LineBorder;
+
+import connector.Connector;
+
+import java.awt.Component;
+
+import javax.swing.border.MatteBorder;
+import java.awt.SystemColor;
+
+public class loginpage extends JFrame implements ActionListener {
+
+	public JFrame frame;
+	private JTextField fnametxt;
+	private JTextField emailtxt;
+	private JPasswordField passwordtxt;
+	JLabel incorrectID;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					loginpage window = new loginpage();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public loginpage() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBackground(new Color(255, 255, 255));
+		frame.setBounds(100, 100, 1200, 750);
+		//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setForeground(new Color(255, 69, 0));
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBorder(null);
+		frame.getContentPane().add(panel_1);
+		panel_1.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel_1.reshape(frame.getX(), frame.getY(), frame.getWidth(), frame.getHeight());
+		
+		JLabel lblBloodDonationManagement = new JLabel("Blood Donation Management Application");
+		lblBloodDonationManagement.setBorder(new LineBorder(new Color(255, 69, 0), 2, true));
+		lblBloodDonationManagement.setBounds(34, 27, 1037, 64);
+		lblBloodDonationManagement.setBackground(Color.WHITE);
+		lblBloodDonationManagement.setForeground(Color.WHITE);
+		lblBloodDonationManagement.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBloodDonationManagement.setFont(new Font("Times New Roman", Font.BOLD, 30));
+		
+		JLabel fullname = new JLabel("Full Name");
+		fullname.setBounds(192, 168, 150, 50);
+		fullname.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		
+		JLabel emailid = new JLabel("Email ID");
+		emailid.setForeground(Color.WHITE);
+		emailid.setBounds(666, 237, 150, 50);
+		emailid.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		
+		JLabel password = new JLabel("Password");
+		password.setForeground(Color.WHITE);
+		password.setBounds(666, 307, 150, 50);
+		password.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		
+		fnametxt = new JTextField();
+		fnametxt.setBounds(400, 177, 400, 35);
+		fnametxt.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		fnametxt.setColumns(10);
+		
+		emailtxt = new JTextField();
+		emailtxt.setForeground(new Color(255, 255, 255));
+		emailtxt.setOpaque(false);
+		emailtxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		emailtxt.setBounds(828, 246, 267, 35);
+		emailtxt.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+		emailtxt.setColumns(10);
+		
+		passwordtxt = new JPasswordField();
+		passwordtxt.setForeground(new Color(255, 255, 255));
+		passwordtxt.setOpaque(false);
+		passwordtxt.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 69, 0)));
+		passwordtxt.setBounds(828, 322, 270, 35);
+		passwordtxt.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+		
+		JButton login = new JButton("Login");
+		login.setBackground(SystemColor.info);
+		login.setForeground(new Color(255, 69, 0));
+		login.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		login.setBounds(696, 398, 120, 50);
+		login.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		login.addActionListener(this);
+		
+		JButton register = new JButton("Register");
+		register.setBackground(SystemColor.info);
+		register.setForeground(new Color(255, 69, 0));
+		register.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		register.setBounds(894, 398, 120, 50);
+		register.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		register.addActionListener(this);
+		
+		JLabel wanttorequest = new JLabel("Do you want to request Blood?");
+		wanttorequest.setForeground(Color.WHITE);
+		wanttorequest.setBounds(666, 513, 234, 38);
+		wanttorequest.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		
+		JButton yes = new JButton("Yes");
+		yes.setBackground(SystemColor.info);
+		yes.setForeground(new Color(255, 69, 0));
+		yes.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		yes.setBounds(912, 513, 97, 35);
+		yes.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		yes.addActionListener(this);
+		
+		incorrectID = new JLabel("Email ID or Password not Correct");
+		incorrectID.setBounds(666, 185, 204, 26);
+		incorrectID.setForeground(Color.YELLOW);
+		incorrectID.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		incorrectID.setVisible(false);
+		
+		JLabel lblRegisterNewBlood = new JLabel("Register new Blood Camp");
+		lblRegisterNewBlood.setForeground(Color.WHITE);
+		lblRegisterNewBlood.setBounds(667, 575, 233, 35);
+		lblRegisterNewBlood.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		
+		JButton btnRegisterCamp = new JButton("Register Camp");
+		btnRegisterCamp.setBackground(SystemColor.info);
+		btnRegisterCamp.setForeground(new Color(255, 69, 0));
+		btnRegisterCamp.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		btnRegisterCamp.setBounds(912, 568, 144, 35);
+		btnRegisterCamp.addActionListener(this);
+		btnRegisterCamp.setFont(new Font("Times New Roman", Font.BOLD, 15));
+		panel_1.setLayout(null);
+		panel_1.add(lblBloodDonationManagement);
+		//panel_1.add(fullname);
+		panel_1.add(emailid);
+		panel_1.add(password);
+		//panel_1.add(fnametxt);
+		panel_1.add(emailtxt);
+		panel_1.add(passwordtxt);
+		panel_1.add(login);
+		panel_1.add(register);
+		panel_1.add(incorrectID);
+		panel_1.add(wanttorequest);
+		panel_1.add(yes);
+		panel_1.add(lblRegisterNewBlood);
+		panel_1.add(btnRegisterCamp);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblNewLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\21558881-blood-donation-pictogram-with-related-wordings-with-red-words-on-white-background.jpg"));
+		lblNewLabel.setBackground(new Color(255, 69, 0));
+		lblNewLabel.setOpaque(true);
+		lblNewLabel.setBounds(34, 138, 582, 532);
+		panel_1.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+		lblNewLabel_1.setBounds(0, 0, 1182, 707);
+		panel_1.add(lblNewLabel_1);
+		//panel_1.add(exit);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		String name, emailid, password, sql;
+		Connection conn = Connector.ConnectDb();
+		String cmd = e.getActionCommand();
+		if(cmd == "Register"){
+			/*name = fnametxt.getText();
+			password = new String(passwordtxt.getPassword());
+			emailid = emailtxt.getText();
+			//System.out.println(name + " " + password + " " + emailid );
+			sql = "insert into login_info(Full_Name, EmailID, Password) values (?, ?, ?);";
+			try{
+				PreparedStatement pst = conn.prepareStatement(sql);
+				pst.setString(1, name);
+				pst.setString(2, emailid);
+				pst.setString(3, password);
+				int rs = pst.executeUpdate();
+				System.out.println(rs);}
+			catch(Exception e1){
+				e1.printStackTrace();
+			}*/
+			JFrame reg = new registerform();
+			reg.setVisible(true);
+			frame.dispose();
+		}
+		else if(cmd == "Login"){
+			password = new String(passwordtxt.getPassword());
+			emailid = emailtxt.getText();
+			sql = "select EmailID, Password, type_user, AC_ID from login_info where EmailID=? and Password=?;";
+			try{
+				PreparedStatement pst = conn.prepareStatement(sql);
+				pst.setString(1, emailid);
+				pst.setString(2, password);
+				ResultSet rs= pst.executeQuery();
+				if(rs.next()){
+				int user = rs.getInt("type_user");
+				int ac_id = rs.getInt("AC_ID");
+					if(user == 0){
+						JFrame Donorlanding = new DonorLandingPage(ac_id);
+						Donorlanding.setVisible(true);
+						frame.dispose();
+					}
+					else if(user == 1){
+						JFrame bloodavail = new bloodavailibility(ac_id);
+						bloodavail.setVisible(true);
+						frame.dispose();
+					}
+					else if(user == 2){
+						JFrame ReqLandingPage = new RequestorLandingPage(ac_id);
+						ReqLandingPage.setVisible(true);
+						frame.dispose();
+					}
+					else if(user == 3){
+						JOptionPane.showMessageDialog(frame,"Thank You for Registering your Blood Camp with Us!");
+					}
+				}
+				else{
+					incorrectID.setVisible(true);
+				}
+			}catch(Exception e1){
+				e1.printStackTrace();
+				
+			}
+		}
+		else if(cmd == "Yes"){
+			JFrame req = new Requestorform();
+			req.setVisible(true);
+			frame.dispose();
+		}
+		else if(cmd == "Register Camp"){
+			JFrame regcamp = new RegisterCamp();
+			regcamp.setVisible(true);
+			frame.dispose();
+		}
+		else{
+			System.out.println("ERROR");
+		}
+		
+	}
+}

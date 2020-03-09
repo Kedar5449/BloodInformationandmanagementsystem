@@ -1,0 +1,191 @@
+package dependencies;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import connector.Connector;
+
+import java.awt.Color;
+
+import javax.swing.border.LineBorder;
+import javax.swing.JButton;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
+
+public class RequestorLandingPage extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTable tableHosp;
+	private JTable tableBB;
+	Vector bbVec;
+	Vector bcVec;
+	Vector hospVec;
+	
+	public RequestorLandingPage(int ac_id) {
+		String userLocation=null;
+		String userblood=null;
+		Connection conn = Connector.ConnectDb();
+		PreparedStatement ps1;
+		try {
+			ps1 = conn.prepareStatement("select City, Blood_Group from requestor_details where AC_ID=?");
+			ps1.setInt(1,ac_id);
+			ResultSet land = ps1.executeQuery();
+			land.next();
+			userLocation = land.getString("City");
+			userblood = land.getString("Blood_Group");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1352, 760);
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(255, 255, 255));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 84, 1310, 616);
+		contentPane.add(tabbedPane);
+		
+		DefaultTableModel modelBB = new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					"Blood Bank", "Location", "Phone Number", "EmailID"
+				}
+			) {
+				private static final long serialVersionUID = 1L;
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+			
+		DefaultTableModel modelhosp = new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					"Hospital", "Location", "Phone Number", "EmailID"
+				}
+			) {
+				private static final long serialVersionUID = 1L;
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+				
+		try {
+			PreparedStatement pst = conn.prepareStatement("select AC_ID from blood_availability where "+userblood+" <> 0");
+			ResultSet rs = pst.executeQuery();
+			ResultSet rs1, rs2;
+			PreparedStatement pst1;
+			String phno, email, fname, loc;
+			while(rs.next()){
+				pst = conn.prepareStatement("select Location, Phone_Number from blood_bank where AC_ID = ?");
+				pst1 = conn.prepareStatement("select EmailID, Full_Name from login_info where AC_ID =?");
+				pst.setInt(1, rs.getInt("AC_ID"));
+				pst1.setInt(1, rs.getInt("AC_ID"));
+				rs1 = pst.executeQuery();
+				rs2 = pst1.executeQuery();
+				while(rs1.next() && rs2.next()){
+					loc = rs1.getString("Location");
+					phno = rs1.getString("Phone_Number");
+					fname = rs2.getString("Full_Name");
+					email = rs2.getString("EmailID");
+					bbVec = new Vector();
+					bbVec.add(fname);
+					bbVec.add(loc);
+					bbVec.add(phno);
+					bbVec.add(email);
+					modelBB.addRow(bbVec);
+				}
+				
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+
+		PreparedStatement pst1;
+		try {
+			pst1 = conn.prepareStatement("select contact_number, address, hospital_name, emailid from hospital_details where address = ?");
+			pst1.setString(1,userLocation);
+			ResultSet rs = pst1.executeQuery();
+			String phoneNo;
+			String loc, emailid, fname;
+			while(rs.next())
+			{
+				hospVec = new Vector();
+				fname = rs.getString("hospital_name");
+				phoneNo = rs.getString("contact_number");
+				loc = rs.getString("address");
+				emailid = rs.getString("emailid");
+				hospVec.add(fname);
+				hospVec.add(loc);
+				hospVec.add(phoneNo);
+				hospVec.add(emailid);
+				modelhosp.addRow(hospVec);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		tableHosp = new JTable(modelhosp);
+		tableBB = new JTable(modelBB);
+		JScrollPane scrollPane = new JScrollPane(tableHosp);
+		scrollPane.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		scrollPane.setBackground(new Color(255, 255, 255));
+		tabbedPane.addTab("Hospital", null, scrollPane, null);
+		tabbedPane.addTab("Blood Bank", null, new JScrollPane(tableBB), null);
+		
+		JLabel lblPlacesYouCan = new JLabel("Places where Blood is Available");
+		lblPlacesYouCan.setForeground(new Color(255, 69, 0));
+		lblPlacesYouCan.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		lblPlacesYouCan.setFont(new Font("Arial Rounded MT Bold", Font.PLAIN, 20));
+		lblPlacesYouCan.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPlacesYouCan.setBounds(12, 13, 412, 58);
+		contentPane.add(lblPlacesYouCan);		
+		
+		JButton btnSignOut = new JButton("Sign Out");
+		btnSignOut.addActionListener(this);
+		btnSignOut.setBorder(new LineBorder(new Color(255, 69, 0), 1, true));
+		btnSignOut.setForeground(new Color(255, 69, 0));
+		btnSignOut.setFont(new Font("Times New Roman", Font.BOLD, 22));
+		btnSignOut.setBounds(480, 15, 120, 58);
+		contentPane.add(btnSignOut);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+		lblNewLabel.setBounds(0, -53, 1280, 900);
+		contentPane.add(lblNewLabel);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		String cmd2 = e.getActionCommand();
+		if(cmd2 =="Sign Out"){
+			dispose();
+			loginpage login = new loginpage();
+			login.frame.setVisible(true);
+		}
+		
+	}
+}

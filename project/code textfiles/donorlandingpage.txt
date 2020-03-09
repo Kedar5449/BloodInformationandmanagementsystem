@@ -1,0 +1,235 @@
+package dependencies;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import connector.Connector;
+
+import javax.swing.JButton;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Color;
+import javax.swing.ImageIcon;
+
+public class DonorLandingPage extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTable tableHosp;
+	private JTable tableBC;
+	private JTable tableBB;
+	Vector bbVec;
+	Vector bcVec;
+	Vector hospVec;
+
+	public DonorLandingPage(int ac_id) {
+		String userLocation=null;
+		Connection conn = Connector.ConnectDb();
+		PreparedStatement ps1;
+		try {
+			ps1 = conn.prepareStatement("select Address from donor_info where AC_ID=?");
+			ps1.setInt(1,ac_id);
+			ResultSet land = ps1.executeQuery();
+			land.next();
+			userLocation = land.getString("Address");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1352, 760);
+		contentPane = new JPanel();
+		contentPane.setBackground(new Color(255, 255, 255));
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 84, 1310, 616);
+		contentPane.add(tabbedPane);
+		
+		DefaultTableModel modelBB = new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					"Blood Bank", "Location", "Phone Number", "EmailID"
+				}
+			) {
+				private static final long serialVersionUID = 1L;
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+			
+		DefaultTableModel modelhosp = new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					"Hospital", "Location", "Phone Number", "EmailID"
+				}
+			) {
+				private static final long serialVersionUID = 1L;
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+			
+		DefaultTableModel modelBC = new DefaultTableModel(
+				new Object[][] {},
+				new String[] {
+					"Blood Camp", "Location", "Phone Number", "EmailID"
+				}
+			) {
+				private static final long serialVersionUID = 1L;
+				boolean[] columnEditables = new boolean[] {
+					false, false, false, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+			
+			
+//*******************************************************BLOOD BANK*******************************************************
+		try{
+			PreparedStatement pst = conn.prepareStatement("select AC_ID, Location, Phone_Number from blood_bank where Location = ?");
+			pst.setString(1,userLocation);
+			int ac_idbc;
+			String phoneNo;
+			String loc, emailid, fname;
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				bbVec = new Vector();
+				phoneNo = rs.getString("Phone_Number");
+				loc = rs.getString("Location");
+				ac_idbc = rs.getInt("AC_ID");
+				pst = conn.prepareStatement("select Full_Name, EmailID from login_info where AC_ID=?");
+				pst.setInt(1, ac_idbc);
+				ResultSet rs1 = pst.executeQuery();
+				rs1.next();
+				fname = rs1.getString("Full_Name");
+				emailid = rs1.getString("EmailID");
+				bbVec.add(fname);
+				bbVec.add(loc);
+				bbVec.add(phoneNo);
+				bbVec.add(emailid);
+				modelBB.addRow(bbVec);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+
+//*******************************************************BLOOD Camp*******************************************************			
+		try{
+			PreparedStatement pst = conn.prepareStatement("select AC_ID, Location, Contact_Phone_Number from blood_camp_details where Location = ?");
+			pst.setString(1,userLocation);
+			int ac_idbc;
+			String phoneNo;
+			String loc, emailid, fname;
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				bcVec = new Vector();
+				phoneNo = rs.getString("Contact_Phone_Number");
+				loc = rs.getString("Location");
+				ac_idbc = rs.getInt("AC_ID");
+				pst = conn.prepareStatement("select Full_Name, EmailID from login_info where AC_ID=?");
+				pst.setInt(1, ac_idbc);
+				ResultSet rs1 = pst.executeQuery();
+				rs1.next();
+				fname = rs1.getString("Full_Name");
+				emailid = rs1.getString("EmailID");
+				bcVec.add(fname);
+				bcVec.add(loc);
+				bcVec.add(phoneNo);
+				bcVec.add(emailid);
+				modelBC.addRow(bcVec);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+//*******************************************************Hospital*******************************************************
+		PreparedStatement pst1;
+		try {
+			pst1 = conn.prepareStatement("select contact_number, address, hospital_name, emailid from hospital_details where address = ?");
+			pst1.setString(1,userLocation);
+			ResultSet rs = pst1.executeQuery();
+			String phoneNo;
+			String loc, emailid, fname;
+			while(rs.next())
+			{
+				hospVec = new Vector();
+				fname = rs.getString("hospital_name");
+				phoneNo = rs.getString("contact_number");
+				loc = rs.getString("address");
+				emailid = rs.getString("emailid");
+				hospVec.add(fname);
+				hospVec.add(loc);
+				hospVec.add(phoneNo);
+				hospVec.add(emailid);
+				modelhosp.addRow(hospVec);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		tableHosp = new JTable(modelhosp);
+		tableBB = new JTable(modelBB);
+		tableBC = new JTable(modelBC);
+		JScrollPane scrollPane = new JScrollPane(tableHosp);
+		scrollPane.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		scrollPane.setBackground(new Color(255, 255, 255));
+		tabbedPane.addTab("Hospital", null, scrollPane, null);
+		tabbedPane.addTab("Blood Bank", null, new JScrollPane(tableBB), null);
+		tabbedPane.addTab("Blood Camp", null, new JScrollPane(tableBC), null);
+		
+		JLabel lblPlacesYouCan = new JLabel("Places you can donate Blood ");
+		lblPlacesYouCan.setForeground(new Color(255, 69, 0));
+		lblPlacesYouCan.setFont(new Font("Times New Roman", Font.BOLD, 32));
+		lblPlacesYouCan.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPlacesYouCan.setBounds(12, 13, 439, 58);
+		contentPane.add(lblPlacesYouCan);
+		
+		JButton btnNewButton = new JButton("Sign Out");
+		btnNewButton.setForeground(new Color(255, 69, 0));
+		btnNewButton.setFont(new Font("Times New Roman", Font.BOLD, 24));
+		btnNewButton.addActionListener(this);
+		btnNewButton.setBounds(518, 20, 150, 50);
+		contentPane.add(btnNewButton);
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\KEDAR TERKHEDKAR\\Downloads\\WhatsApp Image 2019-10-07 at 12.38.10 AM.jpeg"));
+		lblNewLabel.setBounds(0, 0, 1322, 733);
+		contentPane.add(lblNewLabel);
+		
+		
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if(cmd == "Sign Out"){
+			dispose();
+			loginpage login = new loginpage();
+			login.frame.setVisible(true);
+		}
+	}
+}
